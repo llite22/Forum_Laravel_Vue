@@ -12,7 +12,9 @@ export default {
     data() {
         return {
             title: '',
-            section_id: null
+            section_id: null,
+            branches: [],
+            parent_id: null
         }
     },
 
@@ -23,9 +25,19 @@ export default {
     methods: {
         store() {
             this.$inertia.post('/branches', {
+                parent_id: this.parent_id,
                 section_id: this.section_id,
                 title: this.title
             })
+        },
+        async getBranches() {
+            this.parent_id = null
+            try {
+                const responce = await axios.get(`/sections/${this.section_id}/branches`)
+                this.branches = responce.data
+            } catch (error) {
+                console.log(error);
+            }
         }
     },
 
@@ -39,9 +51,15 @@ export default {
             <h3 class="text-xl">Добавить ветку</h3>
             <div>
                 <div class="mb-4" v-if="sections.length > 0">
-                    <select class="border-gray-300 p-2 w-1/4" v-model="section_id">
+                    <select @change="getBranches" class="border-gray-300 p-2 w-1/4" v-model="section_id">
                         <option value="null" selected disabled>Выберите раздел</option>
                         <option v-for="section in sections" :value="section.id">{{ section.title }}</option>
+                    </select>
+                </div>
+                <div class="mb-4" v-if="branches.length > 0">
+                    <select class="border-gray-300 p-2 w-1/4" v-model="parent_id">
+                        <option value="null" selected disabled>Выберите ветку</option>
+                        <option v-for="branch in  branches" :value="branch.id">{{ branch.title }}</option>
                     </select>
                 </div>
                 <div class="mb-4">
