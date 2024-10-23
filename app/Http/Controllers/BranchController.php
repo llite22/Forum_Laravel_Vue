@@ -8,6 +8,7 @@ use App\Http\Resources\Branch\BranchResource;
 use App\Http\Resources\Section\SectionResource;
 use App\Models\Branch;
 use App\Models\Section;
+use Illuminate\Http\RedirectResponse;
 
 class BranchController extends Controller
 {
@@ -32,10 +33,10 @@ class BranchController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $branch = Branch::firstOrCreate($data);
+        Branch::firstOrCreate($data);
         return redirect()->route('sections.index');
     }
 
@@ -53,15 +54,21 @@ class BranchController extends Controller
      */
     public function edit(Branch $branch)
     {
-        //
+        $sections = Section::all();
+        $sections = SectionResource::collection($sections)->resolve();
+
+        $branch = BranchResource::make($branch)->resolve();
+        return inertia('Branch/Edit', compact('sections', 'branch'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Branch $branch)
+    public function update(UpdateRequest $request, Branch $branch): RedirectResponse
     {
-        //
+        $data = $request->validated();
+        $branch->update($data);
+        return redirect()->route('sections.index');
     }
 
     /**

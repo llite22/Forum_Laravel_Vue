@@ -11,7 +11,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'section_id' => ['required', 'integer', 'exists:sections,id'],
+            'title' => ['required', 'string', 'max:255'],
+            'parent_id' => ['nullable', 'integer', 'exists:branches,id'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'section_id.required' => 'Поле section_id необходимо для заполнения',
+            'title.required' => 'Поле title необходимо для заполнения',
         ];
     }
 }
