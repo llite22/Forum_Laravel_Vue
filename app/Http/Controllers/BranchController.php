@@ -80,4 +80,10 @@ class BranchController extends Controller
         $branch->delete();
         return redirect()->back();
     }
+
+    public function themeCreate(Branch $branch)
+    {
+        $branch = BranchResource::make($branch)->resolve();
+        return inertia('Theme/Create', compact('branch'));
+    }
 }

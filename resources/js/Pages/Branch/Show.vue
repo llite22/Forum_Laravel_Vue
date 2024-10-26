@@ -18,6 +18,11 @@ export default {
     <div>
         <div class="flex flex-col gap-2 mb-4">
             <h3 class="text-xl">{{ branch.title }}</h3>
+            <Link :href="route('branches.theme.create', branch.id)"
+                  class="flex justify-center mr-4 w-1/6 bg-white px-2 py-1 border border-gray-300 rounded-lg text-center">
+                +
+                Тема
+            </Link>
         </div>
         <div>
             <div v-for="branch in branch.children" class="flex items-center">
