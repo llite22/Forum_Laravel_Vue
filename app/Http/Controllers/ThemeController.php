@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Theme\StoreRequest;
 use App\Http\Requests\Theme\UpdateRequest;
+use App\Http\Resources\Theme\ThemeResource;
 use App\Models\Theme;
+use Illuminate\Http\RedirectResponse;
 
 class ThemeController extends Controller
 {
@@ -39,7 +41,8 @@ class ThemeController extends Controller
      */
     public function show(Theme $theme)
     {
-        //
+        $theme = ThemeResource::make($theme)->resolve();
+        return inertia('Theme/Show', compact('theme'));
     }
 
     /**
@@ -47,22 +50,26 @@ class ThemeController extends Controller
      */
     public function edit(Theme $theme)
     {
-        //
+        $theme = ThemeResource::make($theme)->resolve();
+        return inertia('Theme/Edit', compact('theme'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Theme $theme)
+    public function update(UpdateRequest $request, Theme $theme): RedirectResponse
     {
-        //
+        $data = $request->validated();
+        $theme->update($data);
+        return redirect()->route('branches.show', $theme->branch_id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Theme $theme)
+    public function destroy(Theme $theme): RedirectResponse
     {
-        //
+        $theme->delete();
+        return redirect()->route('branches.show', $theme->branch_id);
     }
 }
