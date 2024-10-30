@@ -12,6 +12,7 @@ export default {
     ],
 
     data() {
+        return {}
     },
 
     components: {
@@ -21,9 +22,9 @@ export default {
     },
 
     methods: {
-        store() {
+        async store() {
             try {
-                axios.post('/messages', {
+                await axios.post('/messages', {
                     content: this.$refs.editor.innerHTML,
                     theme_id: this.theme.id
                 })
@@ -43,7 +44,25 @@ export default {
         <div class="flex flex-col gap-2 mb-4">
             <h3 class="text-xl">{{ theme.title }}</h3>
         </div>
-        <div>
+        <div v-if="theme.messages.length">
+            <div v-for="message in theme.messages" class="flex bg-white border border-gray-300">
+                <div class="p-4 w-1/6 border-r border-gray-300">
+                    <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-2">
+
+                    </div>
+                    <div>
+                        <h3 class="text-center">{{ message.user.name }}</h3>
+                    </div>
+                </div>
+                <div class="p-4 w-5/6">
+                    <div class="mb-2">
+                        <p class="text-sm italic">{{ message.time }}</p>
+                    </div>
+                    <div>
+                        <p v-html="message.content"></p>
+                    </div>
+                </div>
+            </div>
 
         </div>
         <div class="bg-white border-gray-300 border p-4">

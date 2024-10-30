@@ -13,7 +13,10 @@ export default {
 <template>
     <div>
         <div class="flex justify-center bg-white border-b border-gray-300 py-4">
-            <Link :href="route('sections.index')" class="w-1/2 mx-auto">Форум</Link>
+            <div class="w-1/2 mx-auto">
+                <Link :href="route('sections.index')" class="mr-4">Форум</Link>
+                <Link :href="route('users.personal')">Личный кабинет</Link>
+            </div>
         </div>
         <div class="w-1/2 mx-auto py-4">
             <slot/>
