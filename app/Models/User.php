@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute()
     {
-        return url('storage/' . $this->avatar);
+        return $this->avatar ? url('storage/' . $this->avatar) : null;
     }
 
     public function deleteOldAvatar(): void

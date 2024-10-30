@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class UserController extends Controller
 {
@@ -22,7 +24,18 @@ class UserController extends Controller
 
         $user->deleteOldAvatar();
 
-        $path = Storage::disk('public')->put('/avatars', $data['avatar']);
+        $manager = new ImageManager(new Driver());
+
+        $image = $manager->read($data['avatar'])
+            ->coverDown(100, 100);
+
+        $filename = uniqid('avatar_') . '.jpg';
+        $path = 'avatars/' . $filename;
+
+        Storage::disk('public')->put(
+            $path,
+            $image->toJpg()
+        );
 
         $user->update([
             'avatar' => $path

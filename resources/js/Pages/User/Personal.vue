@@ -44,8 +44,8 @@ export default {
             <div class="mb-4">
                 <p class="mb-2">Сменить аватар</p>
                 <a href="#" @click.prevent="this.$refs.avatar_load.click()"
-                   class="flex w-24 h-24 rounded-full bg-gray-300">
-                    <img v-if="user.avatar_url" :src="user.avatar_url" :alt="user.name">
+                   class="flex w-24 h-24 rounded-full overflow-hidden bg-gray-300">
+                    <img class="w-24 h-24" v-if="user.avatar_url" :src="user.avatar_url" :alt="user.name">
                 </a>
                 <div hidden>
                     <input @change="storeAvatar" ref="avatar_load" type="file">
