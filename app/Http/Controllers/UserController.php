@@ -17,9 +17,14 @@ class UserController extends Controller
     public function update(UpdateRequest $request): array
     {
         $data = $request->validated();
+
+        $user = auth()->user();
+
+        $user->deleteOldAvatar();
+
         $path = Storage::disk('public')->put('/avatars', $data['avatar']);
 
-        auth()->user()->update([
+        $user->update([
             'avatar' => $path
         ]);
 
