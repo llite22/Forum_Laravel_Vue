@@ -30,6 +30,7 @@ export default {
         async toggleLike(message) {
             try {
                 await axios.post(`/messages/${message.id}/likes`)
+                message.is_liked ? message.likes-- : message.likes++
                 message.is_liked = !message.is_liked
             } catch (error) {
                 console.error(error);
@@ -66,7 +67,10 @@ export default {
                             <p v-html="message.content"></p>
                         </div>
                         <div class="flex items-center justify-end">
-                            <div>
+                            <div class="flex items-center">
+                                <span class="mr-2">
+                                    {{ message.likes}}
+                                </span>
                                 <a @click.prevent="toggleLike(message)" href="#">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                          stroke-width="1.5" stroke="currentColor"
