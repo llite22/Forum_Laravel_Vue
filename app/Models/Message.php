@@ -13,6 +13,8 @@ class Message extends Model
 
     protected $guarded = false;
 
+    protected $withCount = ['likedUsers'];
+
     public function getIsLikedAttribute(): bool
     {
         return $this->likedUsers()->where('user_id', auth()->id())->exists();
