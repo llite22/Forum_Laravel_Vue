@@ -16,11 +16,13 @@ export default {
 
     methods: {
         async store() {
+            if (this.$refs.editor.innerHTML === '') return null
             try {
-                await axios.post('/messages', {
+                const res = await axios.post('/messages', {
                     content: this.$refs.editor.innerHTML,
                     theme_id: this.theme.id
                 })
+                this.theme.messages.push(res.data)
                 this.$refs.editor.innerHTML = ''
             } catch (error) {
                 console.error(error);
@@ -35,6 +37,22 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+        },
+        quote(content) {
+            if (window.getSelection().toString()) {
+                content = window.getSelection().toString()
+            }
+
+            const editor = this.$refs.editor;
+            const oldText = editor.innerHTML
+            editor.innerHTML = `${oldText}<br><blockquote> ${content} </blockquote><br>`
+        },
+        answer(message) {
+            const title = `<div class="w-full bg-gray-200 border border-gray-300 p-2">Ответ пользователю @${message.user.id} ${message.user.name} ${message.time}</div>`
+
+            const editor = this.$refs.editor;
+            const oldText = editor.innerHTML
+            editor.innerHTML = `${oldText} ${title}<blockquote> ${message.content} </blockquote><br>`
         }
     },
 
@@ -66,10 +84,18 @@ export default {
                         <div class="mb-4">
                             <p v-html="message.content"></p>
                         </div>
-                        <div class="flex items-center justify-end">
+                        <div class="flex items-center justify-end w-full">
                             <div class="flex items-center">
+                                <div class="mr-4">
+                                    <a @click.prevent="quote(message.content)" href="#"
+                                       class="text-sm rounded-lg bg-sky-600 border border-sky-700 inline-flex py-2 px-3 text-center text-white">Цитировать</a>
+                                </div>
+                                <div class="mr-4">
+                                    <a @click.prevent="answer(message)" href="#"
+                                       class="text-sm rounded-lg bg-indigo-600 border border-indigo-700 inline-flex py-2 px-3 text-center text-white">Ответить</a>
+                                </div>
                                 <span class="mr-2">
-                                    {{ message.likes}}
+                                    {{ message.likes }}
                                 </span>
                                 <a @click.prevent="toggleLike(message)" href="#">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -91,7 +117,8 @@ export default {
                 <h3 class="text-xl">Добавить сообщение</h3>
             </div>
             <div class="mb-4">
-                <div ref="editor" class="w-full border border-gray-300 p-2" contenteditable="true">
+                <div ref="editor" @keydown="handleKeydown" class="w-full border border-gray-300 p-2"
+                     contenteditable="true">
                 </div>
             </div>
             <div class="flex">
@@ -101,3 +128,15 @@ export default {
         </div>
     </div>
 </template>
+
+<style>
+
+blockquote {
+    display: flex;
+    padding: 4px;
+    padding-left: 6px;
+    border-left: 4px solid #a0aec0;
+    background-color: #f6f6f6;
+}
+</style>
+

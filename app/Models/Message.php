@@ -29,4 +29,9 @@ class Message extends Model
     {
         return $this->belongsToMany(User::class, 'message_user_likes', 'message_id', 'user_id');
     }
+    public function answeredUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'message_user_answers', 'message_id', 'user_id');
+    }
+
 }
