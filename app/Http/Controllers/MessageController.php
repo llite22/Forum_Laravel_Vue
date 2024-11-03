@@ -35,7 +35,7 @@ class MessageController extends Controller
         $data['user_id'] = auth()->id();
 
         $ids = Str::of($data['content'])->matchAll('/@[\d]+/')->unique()->transform(function ($id) {
-            return (int) Str::of($id)->replaceMatches('/@/', '')->value();
+            return (int)Str::of($id)->replaceMatches('/@/', '')->value();
         });
 
         $message = Message::create($data);
@@ -82,5 +82,13 @@ class MessageController extends Controller
     public function toggleLike(Message $message)
     {
         $message->likedUsers()->toggle(auth()->id());
+    }
+
+    public function storeComplaint(\App\Http\Requests\Complaint\StoreRequest $request, Message $message): array
+    {
+        $data = $request->validated();
+        $message->complaintedUsers()->attach(auth()->id(), $data);
+
+        return MessageResource::make($message)->resolve();
     }
 }

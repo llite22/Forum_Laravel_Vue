@@ -53,6 +53,23 @@ export default {
             const editor = this.$refs.editor;
             const oldText = editor.innerHTML
             editor.innerHTML = `${oldText} ${title}<blockquote> ${message.content} </blockquote><br>`
+        },
+        openComplaint(message) {
+            message.body = ''
+            message.is_complaint = !message.is_complaint
+        },
+        async complaint(message) {
+            if (message.body === '') return null
+            try {
+                const res = await axios.post(`/messages/${message.id}/complaints`, {
+                    body: message.body,
+                    theme_id: message.theme_id
+                })
+                message.is_not_solved_complaint = res.data.is_not_solved_complaint
+                message.body = ''
+            } catch (error) {
+                console.error(error);
+            }
         }
     },
 
@@ -68,8 +85,9 @@ export default {
         <div v-if="theme.messages.length">
             <div v-for="message in theme.messages" class="flex bg-white border border-gray-300">
                 <div class="p-4 w-1/6 border-r border-gray-300">
-                    <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-2 overflow-hidden">
-                        <img class="w-24 h-24" v-if="message.user.avatar_url" :src="message.user.avatar_url"
+                    <div class="w-full max-w-24 max-h-24 bg-gray-300 rounded-full mx-auto mb-2 overflow-hidden">
+                        <img class="w-full h-full object-cover" v-if="message.user.avatar_url"
+                             :src="message.user.avatar_url"
                              :alt="message.user.name">
                     </div>
                     <div>
@@ -81,11 +99,18 @@ export default {
                         <p class="text-sm italic">{{ message.time }}</p>
                     </div>
                     <div>
+                        <div class="mb-4" v-if="message.is_not_solved_complaint">
+                            <p class="w-full bg-red-100  border border-red-200 p-2">Ваша жалоба в рассмотрении</p>
+                        </div>
                         <div class="mb-4">
                             <p v-html="message.content"></p>
                         </div>
-                        <div class="flex items-center justify-end w-full">
+                        <div class="flex items-center justify-end w-full mb-4">
                             <div class="flex items-center">
+                                <div class="mr-4">
+                                    <a @click.prevent="openComplaint(message)" href="#"
+                                       class="text-sm rounded-lg bg-white border border-red-800 inline-flex py-2 px-3 text-center text-red-800">Пожаловаться</a>
+                                </div>
                                 <div class="mr-4">
                                     <a @click.prevent="quote(message.content)" href="#"
                                        class="text-sm rounded-lg bg-sky-600 border border-sky-700 inline-flex py-2 px-3 text-center text-white">Цитировать</a>
@@ -106,6 +131,12 @@ export default {
                                     </svg>
                                 </a>
                             </div>
+                        </div>
+                        <div class="flex items-center" v-if="message.is_complaint">
+                            <input v-model="message.body"
+                                   class="p-2 w-9/12 rounded-r-none rounded-lg border border-gray-300" type="text">
+                            <a @click.prevent="complaint(message)" href="#"
+                               class="w-3/12 rounded-l-none text-center bg-red-800 text-white p-2 rounded-lg">Отправить</a>
                         </div>
                     </div>
                 </div>

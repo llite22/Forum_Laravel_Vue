@@ -20,6 +20,14 @@ class Message extends Model
         return $this->likedUsers()->where('user_id', auth()->id())->exists();
     }
 
+    public function getIsNotSolvedComplaintAttribute()
+    {
+        return $this->complaintedUsers()
+            ->where('user_id', auth()->id())
+            ->where('is_solved', false)
+            ->exists();
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -29,9 +37,16 @@ class Message extends Model
     {
         return $this->belongsToMany(User::class, 'message_user_likes', 'message_id', 'user_id');
     }
+
     public function answeredUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'message_user_answers', 'message_id', 'user_id');
     }
+
+    public function complaintedUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'complaints', 'message_id', 'user_id');
+    }
+
 
 }
