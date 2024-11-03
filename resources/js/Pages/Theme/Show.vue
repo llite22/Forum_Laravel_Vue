@@ -85,6 +85,16 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+        },
+        strong() {
+            if (!window.getSelection().toString()) return null
+
+            const range = window.getSelection().getRangeAt(0)
+            const strong = document.createElement('strong')
+
+            strong.className = 'some-class'
+
+            range.surroundContents(strong)
         }
     },
 
@@ -163,8 +173,8 @@ export default {
                 <h3 class="text-xl">Добавить сообщение</h3>
             </div>
             <div class="mb-4">
-                <div class="bg-gray-50 border-gray-100 p-2 w-full">
-                    <div>
+                <div class="flex items-center bg-gray-50 border-gray-100 p-2 w-full">
+                    <div class="mr-2">
                         <a @click.prevent="this.$refs.image.click()" href="#" class="flex w-6">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                  stroke="currentColor" class="size-6">
@@ -174,8 +184,12 @@ export default {
                         </a>
                         <input @change="storeImage" hidden ref="image" type="file">
                     </div>
+                    <div>
+                        <a @click.prevent="strong" href="#" class="text-lg"><strong>B</strong></a>
+                    </div>
                 </div>
-                <div ref="editor" @keydown="handleKeydown" class="w-full border border-gray-300 p-2"
+                <div ref="editor" @keydown="handleKeydown"
+                     class="w-full border border-gray-300 p-2 whitespace-pre-wrap break-words overflow-wrap-break-word"
                      contenteditable="true">
                 </div>
             </div>
