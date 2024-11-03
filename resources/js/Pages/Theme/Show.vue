@@ -70,6 +70,21 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+        },
+        async storeImage(e) {
+            const file = e.target.files[0]
+            const formData = new FormData()
+            formData.append('image', file)
+
+            try {
+                const res = await axios.post('/images', formData)
+                const image = `<span hidden>img_id=${res.data.id}</span> <img src="${res.data.url}" alt="img" />`
+                const editor = this.$refs.editor;
+                const oldText = editor.innerHTML
+                editor.innerHTML = `${oldText}<br> ${image} <br>`
+            } catch (error) {
+                console.error(error);
+            }
         }
     },
 
@@ -148,11 +163,23 @@ export default {
                 <h3 class="text-xl">Добавить сообщение</h3>
             </div>
             <div class="mb-4">
+                <div class="bg-gray-50 border-gray-100 p-2 w-full">
+                    <div>
+                        <a @click.prevent="this.$refs.image.click()" href="#" class="flex w-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
+                            </svg>
+                        </a>
+                        <input @change="storeImage" hidden ref="image" type="file">
+                    </div>
+                </div>
                 <div ref="editor" @keydown="handleKeydown" class="w-full border border-gray-300 p-2"
                      contenteditable="true">
                 </div>
             </div>
-            <div class="flex">
+            <div class="flex items-center">
                 <a @click.prevent="store" class="w-1/4 p-2 bg-sky-600 text-white text-center border border-sky-700"
                    href="#">Опубликовать</a>
             </div>
@@ -164,6 +191,7 @@ export default {
 
 blockquote {
     display: flex;
+    flex-direction: column;
     padding: 4px;
     padding-left: 6px;
     border-left: 4px solid #a0aec0;
