@@ -26,7 +26,7 @@ export default {
         </div>
         <div class="mb-8">
             <div class="mb-4">
-                <h3 class="text-xl">Разделы</h3>
+                <h3 v-if="branch.children && branch.children.length > 0" class="text-xl">Разделы</h3>
             </div>
             <div v-for="branch in branch.children" class="flex items-center">
                 <Link class="flex items-center gap-5 w-full bg-white p-4 border border-gray-300"
@@ -58,7 +58,7 @@ export default {
                 </Link>
             </div>
             <div class="flex flex-col gap-2 mb-4">
-                <h3 class="text-xl">Темы</h3>
+                <h3 v-if="branch.themes && branch.themes.length > 0" class="text-xl">Темы</h3>
             </div>
             <div v-for="theme in branch.themes" class="flex items-center">
                 <Link class="flex items-center gap-5 w-full bg-white p-4 border border-gray-300"
