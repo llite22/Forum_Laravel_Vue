@@ -108,7 +108,7 @@ export default {
             <h3 class="text-xl">{{ theme.title }}</h3>
         </div>
         <div v-if="theme.messages.length">
-            <div v-for="message in theme.messages" class="flex bg-white border border-gray-300">
+            <div v-for="message in theme.messages" :id="message.id" class="flex bg-white border border-gray-300">
                 <div class="p-4 w-1/6 border-r border-gray-300">
                     <div class="w-full max-w-24 max-h-24 bg-gray-300 rounded-full mx-auto mb-2 overflow-hidden">
                         <img class="w-full h-full object-cover" v-if="message.user.avatar_url"
