@@ -55,9 +55,18 @@ export default {
                 <div class="mb-4" v-if="sections.length > 0">
                     <select @change="getBranches" class="border-gray-300 p-2 w-1/4" v-model="section_id">
                         <option value="null" selected disabled>Выберите раздел</option>
-                        <option v-for="section in sections" :value="section.id">{{ section.title }}</option>
+                        <template v-for="section in sections">
+                            <template v-if="this.$page.props.auth.roles.some(code => {
+                            return [
+                                `editor`,
+                                `editor.${section.id}`,
+                            ].includes(code)
+                        })">
+                                <option :value="section.id">{{ section.title }}</option>
+                            </template>
+                        </template>
                     </select>
-                    <InputError :message="$page.props.errors.section_id" />
+                    <InputError :message="$page.props.errors.section_id"/>
                 </div>
                 <div class="mb-4" v-if="branches.length > 0">
                     <select class="border-gray-300 p-2 w-1/4" v-model="parent_id">
@@ -67,7 +76,7 @@ export default {
                 </div>
                 <div class="mb-4">
                     <input placeholder="Заголовок" type="text" v-model="title" class="border-gray-300 p-2 w-1/4">
-                    <InputError :message="$page.props.errors.title" />
+                    <InputError :message="$page.props.errors.title"/>
                 </div>
                 <div>
                     <a class="flex justify-center w-1/4 py-2 bg-sky-500 border border-sky-600 text-white text-center cursor-pointer"

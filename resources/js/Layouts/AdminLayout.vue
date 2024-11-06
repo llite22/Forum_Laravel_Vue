@@ -23,18 +23,27 @@ export default {
                 <h3 class="text-xl p-4">Меню</h3>
                 <div>
                     <div>
-                        <Link class="flex p-4 w-full border-t border-b border-gray-300" :href="route('admin.main.index')">
+                        <Link class="flex p-4 w-full border-t border-b border-gray-300"
+                              :href="route('admin.main.index')">
                             Статистика
                         </Link>
                     </div>
                     <div>
-                        <Link class="flex p-4 w-full border-t border-b border-gray-300" :href="route('admin.complaints.index')">
+                        <Link class="flex p-4 w-full border-t border-b border-gray-300"
+                              :href="route('admin.complaints.index')">
                             Жалобы
                         </Link>
                     </div>
                     <div>
-                        <Link class="flex p-4 w-full border-t border-b border-gray-300" :href="route('admin.roles.index')">
+                        <Link class="flex p-4 w-full border-t border-b border-gray-300"
+                              :href="route('admin.roles.index')">
                             Роли
+                        </Link>
+                    </div>
+                    <div>
+                        <Link class="flex p-4 w-full border-t border-b border-gray-300"
+                              :href="route('admin.users.index')">
+                            Пользователи
                         </Link>
                     </div>
                 </div>

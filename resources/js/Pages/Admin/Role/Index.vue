@@ -35,7 +35,7 @@ export default {
                         <tr>
                             <th class="p-4 text-gray-700">ID</th>
                             <th class="p-4 text-gray-700">Название</th>
-                            <th class="p-4 text-gray-700">Код</th>
+                            <th class="p-4 text-gray-700">Роли</th>
                         </tr>
                         </thead>
                         <tbody>
