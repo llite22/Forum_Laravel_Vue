@@ -20,7 +20,7 @@ class Message extends Model
         return $this->likedUsers()->where('user_id', auth()->id())->exists();
     }
 
-    public function getIsNotSolvedComplaintAttribute()
+    public function getIsNotSolvedComplaintAttribute(): bool
     {
         return $this->complaintedUsers()
             ->where('user_id', auth()->id())

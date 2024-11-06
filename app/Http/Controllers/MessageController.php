@@ -7,7 +7,9 @@ use App\Http\Requests\Message\UpdateRequest;
 use App\Http\Resources\Message\MessageResource;
 use App\Models\Image;
 use App\Models\Message;
+use App\Models\Notification;
 use App\Models\User;
+use App\Service\NotificationService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -32,7 +34,7 @@ class MessageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request): array
     {
         $data = $request->validated();
         $data['user_id'] = auth()->id();
@@ -65,6 +67,10 @@ class MessageController extends Controller
             ->whereNull('message_id')->delete();
 
         $message->answeredUsers()->attach($ids);
+
+        $ids->each(function ($id) use ($message) {
+            NotificationService::store($message, 'Вам ответили', $id);
+        });
 
         $message->loadCount('likedUsers');
 
@@ -103,15 +109,20 @@ class MessageController extends Controller
         //
     }
 
-    public function toggleLike(Message $message)
+    public function toggleLike(Message $message): void
     {
-        $message->likedUsers()->toggle(auth()->id());
+        $res = $message->likedUsers()->toggle(auth()->id());
+        if ($res['attached']) {
+            NotificationService::store($message, 'Вам поставили лайк', null);
+        }
     }
 
     public function storeComplaint(\App\Http\Requests\Complaint\StoreRequest $request, Message $message): array
     {
         $data = $request->validated();
         $message->complaintedUsers()->attach(auth()->id(), $data);
+
+        NotificationService::store($message, 'На вас пожаловались', null);
 
         return MessageResource::make($message)->resolve();
     }
